@@ -30,7 +30,7 @@ request.interceptors.request.use(async (config) => {
 request.interceptors.response.use(
   (response) => {
     if (response && response.data) {
-      return jaDeserializer.deserialize(response.data);
+      return response.data;
     }
 
     return response;

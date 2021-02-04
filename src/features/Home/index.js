@@ -1,25 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { io } from 'socket.io-client';
+import socketIOClient from 'socket.io-client';
+import { useForm } from 'react-hook-form';
 
 import { getMessages } from '../../store/messages/actions';
 
-const ENDPOINT = 'http://127.0.0.1:3600';
+const ENDPOINT = 'http://127.0.0.1:3000';
+const NEW_CHAT_MESSAGE_EVENT = 'new_message';
 
-function App({ authenticated, auth, messages }) {
+function App({ authenticated, auth }) {
+  const [messages, setMessages] = useState([]);
+  const socketRef = useRef();
+  const { register, handleSubmit, errors } = useForm();
+  const onSubmit = (data) => {
+    console.log(data, socketRef.current);
+    socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, data);
+  };
   useEffect(() => {
-    if (authenticated) {
-      const socket = io(ENDPOINT, {
-        auth: {
-          token: auth.token,
-        },
-      });
-      socket.on('FromAPI', (data) => {});
-    }
+    console.log('useEffect');
+    // if (authenticated) {
+    console.log(auth.token);
+    socketRef.current = socketIOClient(ENDPOINT, {
+      query: {
+        token: auth.token,
+      },
+    });
+    console.log('Connected to socket', socketRef.current);
+    socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
+    socketRef.current.on('disconnect', () => {
+      console.log(socketRef.current.connected); // false
+    });
+    // }
+    return () => {
+      socketRef.current && socketRef.current.disconnect();
+      console.log('Disconnected to socket');
+    };
   }, [authenticated]);
-  console.log(auth);
   return (
     <div className="jumbotron text-center">
       <div className="container">
@@ -47,17 +67,27 @@ function App({ authenticated, auth, messages }) {
               <section id="feedback"></section>
             </section>
 
-            <section className="row form-group">
-              <div className="col-sm-10">
-                <input id="message" className="form-control" type="text" />
-              </div>
-              <button
-                id="send_message"
-                className="btn btn-success col-sm-2"
-                type="button"
-              >
-                Send
-              </button>
+            <section className="form-group">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="row">
+                  <div className="col-sm-10">
+                    <input
+                      name="message"
+                      className="form-control"
+                      type="text"
+                      ref={register({ required: true })}
+                    />
+                    {errors.message && <span>This field is required</span>}
+                  </div>
+                  <button
+                    id="send_message"
+                    className="btn btn-success col-sm-2"
+                    type="submit"
+                  >
+                    Send
+                  </button>
+                </div>
+              </form>
             </section>
           </>
         )}
@@ -68,15 +98,13 @@ function App({ authenticated, auth, messages }) {
 
 App.propTypes = {
   auth: PropTypes.object,
-  messages: PropTypes.array,
   authenticated: PropTypes.bool,
   getMessages: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  authenticated: !!state.auth.user,
-  messages: state.messages.items || [],
+  authenticated: !!state.auth.user && !!state.auth.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({

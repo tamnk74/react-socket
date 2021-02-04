@@ -1,10 +1,11 @@
 import request from 'utils/request';
 
 export const login = async ({ email, password }) => {
-  const { accessToken, refreshToken } = await request.post('/api/login', {
+  const res = await request.post('/api/login', {
     email,
     password,
   });
+  const { access_token: accessToken, refresh_token: refreshToken } = res;
   localStorage.setItem('token', accessToken);
   localStorage.setItem('refresh_token', refreshToken);
   return request.get('/api/me');

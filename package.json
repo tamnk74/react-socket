@@ -24,6 +24,7 @@
     "react-google-calendar-api": "^1.2.1",
     "react-google-login": "^5.1.21",
     "react-helmet": "^5.2.1",
+    "react-hook-form": "^6.15.1",
     "react-js-pagination": "^3.0.3",
     "react-moment": "^0.8.4",
     "react-redux": "^6.0.1",
