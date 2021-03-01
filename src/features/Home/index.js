@@ -2,44 +2,51 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import socketIOClient from 'socket.io-client';
+// import socketIOClient from 'socket.io-client';
+import io from 'socket.io-client';
 import { useForm } from 'react-hook-form';
 
 import { getMessages } from '../../store/messages/actions';
 
-const ENDPOINT = 'http://127.0.0.1:3000';
 const NEW_CHAT_MESSAGE_EVENT = 'new_message';
+const ENDPOINT = 'http://localhost:3030/';
 
 function App({ authenticated, auth }) {
   const [messages, setMessages] = useState([]);
   const socketRef = useRef();
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = (data) => {
-    console.log(data, socketRef.current);
+    console.log(data, socketRef.current.connected, socketRef.current);
     socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, data);
   };
   useEffect(() => {
     console.log('useEffect');
-    // if (authenticated) {
-    console.log(auth.token);
-    socketRef.current = socketIOClient(ENDPOINT, {
-      query: {
-        token: auth.token,
-      },
-    });
-    console.log('Connected to socket', socketRef.current);
-    socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, (message) => {
-      setMessages((messages) => [...messages, message]);
-    });
-    socketRef.current.on('disconnect', () => {
-      console.log(socketRef.current.connected); // false
-    });
-    // }
+    if (authenticated) {
+      console.log('start connect', auth.token);
+      socketRef.current = io(ENDPOINT, {
+        auth: {
+          token: auth.token,
+        },
+      });
+      socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, (message) => {
+        setMessages((messages) => [...messages, message]);
+      });
+      socketRef.current.on('disconnect', () => {
+        console.log(socketRef.current.id, socketRef.current.connected); // false
+      });
+      socketRef.current.on('set_id', (id) => {
+        console.log('socket id', id); // false
+      });
+      socketRef.current.on('typing', (data) => {
+        console.log('Typing', data.username); // false
+      });
+    }
     return () => {
       socketRef.current && socketRef.current.disconnect();
       console.log('Disconnected to socket');
     };
   }, [authenticated]);
+
   return (
     <div className="jumbotron text-center">
       <div className="container">
