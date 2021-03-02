@@ -20,6 +20,17 @@ class App extends Component {
     super(props);
   }
 
+  notify = (message) =>
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+
+  componentDidMount() {
+    if (localStorage.getItem('token')) {
+      this.props.getUser();
+    }
+  }
+
   render() {
     return (
       <div className="App">
