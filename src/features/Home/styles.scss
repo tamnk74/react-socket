@@ -1,9 +1,11 @@
 #chatroom ul {
   width: 100%;
 }
-.container {
+
+.chat-block {
   max-width: 1170px;
   margin: auto;
+  border: 1px solid #0000001c;
 }
 img {
   max-width: 100%;
@@ -106,7 +108,7 @@ img {
 
 .incoming_msg_img {
   display: inline-block;
-  width: 6%;
+  width: 40px;
 }
 .received_msg {
   display: inline-block;
@@ -168,6 +170,11 @@ img {
   border-top: 1px solid #c4c4c4;
   position: relative;
 }
+
+.type_msg.error {
+  border-bottom: 2px solid red;
+}
+
 .msg_send_btn {
   background: #05728f none repeat scroll 0 0;
   border: medium none;
@@ -187,4 +194,14 @@ img {
 .msg_history {
   height: 516px;
   overflow-y: auto;
+}
+.write_msg {
+  border-bottom: 1px solid #05728fa8;
+}
+.write_msg:focus {
+  border-bottom: 1px solid #9e9e9e;
+  outline: #05728fa8;
+}
+.write_msg:focus.error {
+  border-bottom: 1px solid red;
 }

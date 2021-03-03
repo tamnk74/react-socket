@@ -11,6 +11,7 @@
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
+    "dayjs": "^1.10.4",
     "formik": "^2.1.5",
     "history": "^4.10.1",
     "immer": "^8.0.1",
