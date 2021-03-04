@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import MessageList from './components/MessageList';
+import UserList from './components/UserList';
 
 import { getMessages } from '../../store/messages/actions';
 import './styles.scss';
@@ -16,6 +17,7 @@ const ENDPOINT = 'http://localhost:3030/';
 
 function App({ authenticated, auth }) {
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
   const socketRef = useRef();
   const { register, handleSubmit, reset, errors } = useForm();
   const onSubmit = (data) => {
@@ -28,7 +30,6 @@ function App({ authenticated, auth }) {
     reset();
   };
   useEffect(() => {
-    console.log('useEffect');
     if (authenticated) {
       console.log('start connect', auth.token);
       socketRef.current = io(ENDPOINT, {
@@ -39,13 +40,19 @@ function App({ authenticated, auth }) {
       console.log(socketRef.current);
       socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, addNewMessage);
       socketRef.current.on('disconnect', () => {
-        console.log(socketRef.current.id, socketRef.current.connected); // false
+        console.log('Disconnected'); // false
       });
       socketRef.current.on('set_id', (id) => {
         socketRef.current.id = id;
       });
       socketRef.current.on('set_user', ({ user }) => {
         socketRef.current.user = user;
+      });
+      socketRef.current.on('set_messages', (messages) => {
+        setMessages(messages);
+      });
+      socketRef.current.on('set_users', (users) => {
+        setUsers(users);
       });
       socketRef.current.on('typing', (data) => {
         console.log('Typing', data.username); // false
@@ -66,39 +73,43 @@ function App({ authenticated, auth }) {
           </Link>
         </section>
       ) : (
-        <>
-          <section id="chatroom" className="row">
-            <ul className="list-group">
-              <MessageList
-                messages={messages}
-                userId={socketRef.current && socketRef.current.user.id}
-              />
-            </ul>
-            <section id="feedback"></section>
-          </section>
-
-          <section className="form-group">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="type_msg">
-                <div className="input_msg_write">
-                  <input
-                    name="message"
-                    className={classNames({
-                      write_msg: true,
-                      error: errors.message,
-                    })}
-                    type="text"
-                    placeholder="Type a message"
-                    ref={register({ required: true })}
-                  />
-                  <button className="msg_send_btn" type="submit">
-                    <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
-                  </button>
+        <div className="row">
+          <div className="col-md-4">
+            <UserList users={users} />
+          </div>
+          <div className="col-md-8">
+            <section id="chatroom" className="row">
+              <ul className="list-group">
+                <MessageList
+                  messages={messages}
+                  userId={socketRef.current && socketRef.current.user.id}
+                />
+              </ul>
+              <section id="feedback"></section>
+            </section>
+            <section className="form-group">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="type_msg">
+                  <div className="input_msg_write">
+                    <input
+                      name="message"
+                      className={classNames({
+                        write_msg: true,
+                        error: errors.message,
+                      })}
+                      type="text"
+                      placeholder="Type a message"
+                      ref={register({ required: true })}
+                    />
+                    <button className="msg_send_btn" type="submit">
+                      <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
-          </section>
-        </>
+              </form>
+            </section>
+          </div>
+        </div>
       )}
     </div>
   );

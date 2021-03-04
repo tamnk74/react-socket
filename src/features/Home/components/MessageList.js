@@ -8,14 +8,13 @@ MessageList.propTypes = {
 };
 
 export default function MessageList({ messages, userId }) {
-  console.log(messages, userId);
   return (
     <div className="msg_history">
       {messages.map((message) => {
         return message.user.id === userId ? (
           <div className="outgoing_msg" key={message.id}>
             <div className="sent_msg">
-              <p>{message.message.message}</p>
+              <p>{message.message}</p>
               <span className="time_date">
                 {dayjs(message.message.createdAt).format(TIME_FORMAT)}
               </span>{' '}
@@ -28,7 +27,7 @@ export default function MessageList({ messages, userId }) {
               </div>
               <div className="received_msg">
                 <div className="received_withd_msg">
-                  <p>{message.message.message}</p>
+                  <p>{message.message}</p>
                   <span className="time_date">
                     {dayjs(message.message.createdAt).format(TIME_FORMAT)}
                   </span>
