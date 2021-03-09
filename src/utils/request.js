@@ -1,9 +1,5 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import { Deserializer as JSONAPIDeserializer } from 'jsonapi-serializer';
-const jaDeserializer = new JSONAPIDeserializer({
-  keyForAttribute: 'camelCase',
-});
 
 const request = axios.create({
   baseURL: process.env.API_URL,

@@ -2,96 +2,115 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import socketIOClient from 'socket.io-client';
+// import socketIOClient from 'socket.io-client';
+import io from 'socket.io-client';
 import { useForm } from 'react-hook-form';
+import classNames from 'classnames';
+import MessageList from './components/MessageList';
+import UserList from './components/UserList';
 
 import { getMessages } from '../../store/messages/actions';
+import './styles.scss';
 
-const ENDPOINT = 'http://127.0.0.1:3000';
 const NEW_CHAT_MESSAGE_EVENT = 'new_message';
+const ENDPOINT = 'http://localhost:3030/';
 
 function App({ authenticated, auth }) {
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
   const socketRef = useRef();
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, reset, errors } = useForm();
   const onSubmit = (data) => {
-    console.log(data, socketRef.current);
+    console.log(messages, data);
     socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, data);
   };
+  const addNewMessage = (message) => {
+    console.log(messages);
+    setMessages((messages) => [...messages, message]);
+    reset();
+  };
   useEffect(() => {
-    console.log('useEffect');
-    // if (authenticated) {
-    console.log(auth.token);
-    socketRef.current = socketIOClient(ENDPOINT, {
-      query: {
-        token: auth.token,
-      },
-    });
-    console.log('Connected to socket', socketRef.current);
-    socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, (message) => {
-      setMessages((messages) => [...messages, message]);
-    });
-    socketRef.current.on('disconnect', () => {
-      console.log(socketRef.current.connected); // false
-    });
-    // }
+    if (authenticated) {
+      console.log('start connect', auth.token);
+      socketRef.current = io(ENDPOINT, {
+        query: {
+          token: auth.token,
+        },
+      });
+      console.log(socketRef.current);
+      socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, addNewMessage);
+      socketRef.current.on('disconnect', () => {
+        console.log('Disconnected'); // false
+      });
+      socketRef.current.on('set_id', (id) => {
+        socketRef.current.id = id;
+      });
+      socketRef.current.on('set_user', ({ user }) => {
+        socketRef.current.user = user;
+      });
+      socketRef.current.on('set_messages', (messages) => {
+        setMessages(messages);
+      });
+      socketRef.current.on('set_users', (users) => {
+        setUsers(users);
+      });
+      socketRef.current.on('typing', (data) => {
+        console.log('Typing', data.username); // false
+      });
+    }
     return () => {
       socketRef.current && socketRef.current.disconnect();
       console.log('Disconnected to socket');
     };
   }, [authenticated]);
+  console.log('render', messages, socketRef.current);
   return (
-    <div className="jumbotron text-center">
-      <div className="container">
-        <h1>Super Chat</h1>
-        {!authenticated ? (
-          <section className="row">
-            <Link to="/login" className="btn">
-              Please login to join the chat room
-            </Link>
-          </section>
-        ) : (
-          <>
+    <div className="container chat-block">
+      {!authenticated ? (
+        <section className="row">
+          <Link to="/login" className="btn">
+            Please login to join the chat room
+          </Link>
+        </section>
+      ) : (
+        <div className="row">
+          <div className="col-md-4">
+            <UserList users={users} />
+          </div>
+          <div className="col-md-8">
             <section id="chatroom" className="row">
-              <ul className="list-group" id="chatcontent">
-                {messages.length ? (
-                  messages.map((message) => (
-                    <li className="list-group-item" key={message}>
-                      {message}
-                    </li>
-                  ))
-                ) : (
-                  <li className="list-group-item">Add your message !</li>
-                )}
+              <ul className="list-group">
+                <MessageList
+                  messages={messages}
+                  userId={socketRef.current && socketRef.current.user.id}
+                />
               </ul>
               <section id="feedback"></section>
             </section>
-
             <section className="form-group">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="row">
-                  <div className="col-sm-10">
+                <div className="type_msg">
+                  <div className="input_msg_write">
                     <input
                       name="message"
-                      className="form-control"
+                      className={classNames({
+                        write_msg: true,
+                        error: errors.message,
+                      })}
                       type="text"
+                      placeholder="Type a message"
                       ref={register({ required: true })}
                     />
-                    {errors.message && <span>This field is required</span>}
+                    <button className="msg_send_btn" type="submit">
+                      <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </button>
                   </div>
-                  <button
-                    id="send_message"
-                    className="btn btn-success col-sm-2"
-                    type="submit"
-                  >
-                    Send
-                  </button>
                 </div>
               </form>
             </section>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
