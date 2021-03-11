@@ -63,9 +63,9 @@ function App({ authenticated, auth }) {
       console.log('Disconnected to socket');
     };
   }, [authenticated]);
-  console.log('render', messages, socketRef.current);
+
   return (
-    <div className="container chat-block">
+    <div className="chat-block">
       {!authenticated ? (
         <section className="row">
           <Link to="/login" className="btn">
@@ -74,7 +74,7 @@ function App({ authenticated, auth }) {
         </section>
       ) : (
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-4 border">
             <UserList users={users} />
           </div>
           <div className="col-md-8">
@@ -82,7 +82,11 @@ function App({ authenticated, auth }) {
               <ul className="list-group">
                 <MessageList
                   messages={messages}
-                  userId={socketRef.current && socketRef.current.user.id}
+                  userId={
+                    socketRef.current &&
+                    socketRef.current.user &&
+                    socketRef.current.user.id
+                  }
                 />
               </ul>
               <section id="feedback"></section>

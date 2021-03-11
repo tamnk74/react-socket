@@ -12,12 +12,10 @@ export default function UserList({ users }) {
         <div className="chat_list active_chat" key={user.id}>
           <div className="chat_people">
             <div className="chat_img">
-              <img src={user.avatar} alt={user.name} />
+              <img src={user.avatar} alt={user.name} width="40" height="40" />
             </div>
             <div className="chat_ib">
-              <h5>
-                {user.name} <span className="chat_date"> active </span>
-              </h5>
+              <h5>{user.name}</h5>
               <p>web developer.</p>
             </div>
           </div>
