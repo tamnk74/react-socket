@@ -3,7 +3,6 @@
 }
 
 .chat-block {
-  max-width: 1170px;
   margin: auto;
   border: 1px solid #0000001c;
 }
@@ -204,4 +203,24 @@ img {
 }
 .write_msg:focus.error {
   border-bottom: 1px solid red;
+}
+.user-list {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+.border {
+  border: 1px solid #9e9e9e;
+}
+.chat_img {
+  width: 40px;
+  display: inline-block;
+
+  img {
+    object-fit: contain;
+  }
+}
+
+.chat_ib {
+  width: calc(100% - 40px);
+  display: inline-block;
 }

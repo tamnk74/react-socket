@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 const TIME_FORMAT = 'HH:mm | MMM D';
@@ -8,6 +8,14 @@ MessageList.propTypes = {
 };
 
 export default function MessageList({ messages, userId }) {
+  const lastMsg = useRef(null);
+  const scrollToBottom = () => {
+    lastMsg.current.scrollIntoView({ behavior: "smooth" });
+  }
+  useEffect(() => {
+    scrollToBottom()
+  })
+
   return (
     <div className="msg_history">
       {messages.map((message) => {
@@ -36,6 +44,9 @@ export default function MessageList({ messages, userId }) {
             </div>
           );
       })}
+      <div style={{ float:"left", clear: "both" }}
+             ref={lastMsg}>
+        </div>
     </div>
   );
 }

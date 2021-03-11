@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-// import socketIOClient from 'socket.io-client';
 import io from 'socket.io-client';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
@@ -10,10 +9,11 @@ import MessageList from './components/MessageList';
 import UserList from './components/UserList';
 
 import { getMessages } from '../../store/messages/actions';
+import { SOCKET_URL } from '../../config';
+
 import './styles.scss';
 
 const NEW_CHAT_MESSAGE_EVENT = 'new_message';
-const ENDPOINT = 'http://localhost:3030/';
 
 function App({ authenticated, auth }) {
   const [messages, setMessages] = useState([]);
@@ -31,16 +31,15 @@ function App({ authenticated, auth }) {
   };
   useEffect(() => {
     if (authenticated) {
-      console.log('start connect', auth.token);
-      socketRef.current = io(ENDPOINT, {
+      console.log('Start connect to socket', SOCKET_URL);
+      socketRef.current = io(SOCKET_URL, {
         query: {
           token: auth.token,
         },
       });
-      console.log(socketRef.current);
       socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, addNewMessage);
       socketRef.current.on('disconnect', () => {
-        console.log('Disconnected'); // false
+        console.log('Disconnected from socket');
       });
       socketRef.current.on('set_id', (id) => {
         socketRef.current.id = id;
@@ -55,7 +54,7 @@ function App({ authenticated, auth }) {
         setUsers(users);
       });
       socketRef.current.on('typing', (data) => {
-        console.log('Typing', data.username); // false
+        console.log('Someone is typing');
       });
     }
     return () => {
@@ -63,9 +62,9 @@ function App({ authenticated, auth }) {
       console.log('Disconnected to socket');
     };
   }, [authenticated]);
-  console.log('render', messages, socketRef.current);
+
   return (
-    <div className="container chat-block">
+    <div className="chat-block">
       {!authenticated ? (
         <section className="row">
           <Link to="/login" className="btn">
@@ -74,7 +73,7 @@ function App({ authenticated, auth }) {
         </section>
       ) : (
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-4 border">
             <UserList users={users} />
           </div>
           <div className="col-md-8">
@@ -82,7 +81,11 @@ function App({ authenticated, auth }) {
               <ul className="list-group">
                 <MessageList
                   messages={messages}
-                  userId={socketRef.current && socketRef.current.user.id}
+                  userId={
+                    socketRef.current &&
+                    socketRef.current.user &&
+                    socketRef.current.user.id
+                  }
                 />
               </ul>
               <section id="feedback"></section>
