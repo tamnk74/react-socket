@@ -65,6 +65,7 @@ module.exports = {
       NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
       DEBUG: false,
       API_URL: 'http://localhost:3000',
+      SOCKET_URL: 'http://localhost:3000',
       GOOGLE_CLIENT_ID: '',
       FACEBOOK_APP_ID: '',
     }),

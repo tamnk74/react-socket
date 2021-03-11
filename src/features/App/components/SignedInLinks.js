@@ -38,12 +38,6 @@ class SignedInLinks extends React.Component {
             aria-labelledby="navbarDropdownMenuLink"
             role="menu"
           >
-            <NavLink to="/me/posts" className="dropdown-item">
-              My Posts
-            </NavLink>
-            <NavLink to="/me/posts/create" className="dropdown-item">
-              New Posts
-            </NavLink>
             <NavLink to="/profile" className="dropdown-item">
               Profile
             </NavLink>
