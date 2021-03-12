@@ -8,6 +8,8 @@ export const login = async ({ email, password }) => {
   const { access_token: accessToken, refresh_token: refreshToken } = res;
   localStorage.setItem('token', accessToken);
   localStorage.setItem('refresh_token', refreshToken);
+  request.setToken(accessToken);
+
   return request.get('/api/me');
 };
 
@@ -17,6 +19,8 @@ export const loginGoogle = async ({ tokenId }) => {
   });
   localStorage.setItem('token', accessToken);
   localStorage.setItem('refresh_token', refreshToken);
+  request.setToken(accessToken);
+
   return request.get('/api/me');
 };
 

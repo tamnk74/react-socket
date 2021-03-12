@@ -13,6 +13,7 @@ const authReducer = (state = initialState, action) =>
     switch (action.type) {
       case types.SET_USER:
         draft.user = action.user;
+        draft.token = localStorage.getItem('token');
         break;
       case types.REMOVE_USER:
         draft.user = null;

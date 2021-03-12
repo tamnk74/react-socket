@@ -45,6 +45,7 @@ request.interceptors.response.use(
           const { accessToken } = data;
           const { config } = error;
           window.localStorage.setItem('token', accessToken);
+          request.defaults.headers['x-access-token'] = `Bearer ${accessToken}`;
           return request(config);
         })
         .catch(() => {
