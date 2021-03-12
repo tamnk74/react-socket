@@ -16,7 +16,7 @@ export default function UserList({ users }) {
             </div>
             <div className="chat_ib">
               <h5>{user.name}</h5>
-              <p>web developer.</p>
+              <p>Web developer</p>
             </div>
           </div>
         </div>

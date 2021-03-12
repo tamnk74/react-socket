@@ -7,9 +7,11 @@ import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import MessageList from './components/MessageList';
 import UserList from './components/UserList';
+import RoomList from './components/RoomList';
 
 import { getMessages } from '../../store/messages/actions';
 import { SOCKET_URL } from '../../config';
+import { events } from '../../constants';
 
 import './styles.scss';
 
@@ -18,6 +20,7 @@ const NEW_CHAT_MESSAGE_EVENT = 'new_message';
 function App({ authenticated, auth }) {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const socketRef = useRef();
   const { register, handleSubmit, reset, errors } = useForm();
   const onSubmit = (data) => {
@@ -44,16 +47,21 @@ function App({ authenticated, auth }) {
       socketRef.current.on('set_id', (id) => {
         socketRef.current.id = id;
       });
-      socketRef.current.on('set_user', ({ user }) => {
+      socketRef.current.on(events.SET_USER, ({ user }) => {
         socketRef.current.user = user;
       });
-      socketRef.current.on('set_messages', (messages) => {
+      socketRef.current.on(events.SET_MESSAGES, (messages) => {
         setMessages(messages);
       });
-      socketRef.current.on('set_users', (users) => {
+      socketRef.current.on(events.SET_USERS, (users) => {
+        console.log(users);
         setUsers(users);
       });
-      socketRef.current.on('typing', (data) => {
+      socketRef.current.on(events.SET_ROOMS, (rooms) => {
+        console.log(rooms);
+        setRooms(rooms);
+      });
+      socketRef.current.on('typing', () => {
         console.log('Someone is typing');
       });
     }
@@ -74,6 +82,7 @@ function App({ authenticated, auth }) {
       ) : (
         <div className="row">
           <div className="col-md-4 border">
+            <RoomList rooms={rooms} />
             <UserList users={users} />
           </div>
           <div className="col-md-8">
