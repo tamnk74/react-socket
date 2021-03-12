@@ -15,7 +15,6 @@ export function* registerSaga(payload) {
 
 export function* loginSaga(payload) {
   try {
-    console.log(111);
     const user = yield call(login, payload.user);
     yield put({ type: types.SET_USER, user });
     history.push('/');
