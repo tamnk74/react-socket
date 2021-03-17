@@ -40,6 +40,7 @@ function App({ authenticated, auth }) {
           token: auth.token,
         },
       });
+      console.log(socketRef);
       socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, addNewMessage);
       socketRef.current.on('disconnect', () => {
         console.log('Disconnected from socket');
@@ -58,8 +59,14 @@ function App({ authenticated, auth }) {
         setUsers(users);
       });
       socketRef.current.on(events.SET_ROOMS, (rooms) => {
-        console.log(rooms);
+        console.log('Rooms:  ', rooms);
         setRooms(rooms);
+        if (!socketRef.current.room) {
+          socketRef.current.room = rooms[0];
+          socketRef.current.emit(events.JOIN_ROOM, {
+            roomId: rooms[0].id,
+          });
+        }
       });
       socketRef.current.on('typing', () => {
         console.log('Someone is typing');

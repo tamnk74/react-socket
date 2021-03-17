@@ -10,43 +10,41 @@ MessageList.propTypes = {
 export default function MessageList({ messages, userId }) {
   const lastMsg = useRef(null);
   const scrollToBottom = () => {
-    lastMsg.current.scrollIntoView({ behavior: "smooth" });
-  }
+    lastMsg.current.scrollIntoView({ behavior: 'smooth' });
+  };
   useEffect(() => {
-    scrollToBottom()
-  })
+    scrollToBottom();
+  });
 
   return (
     <div className="msg_history">
-      {messages.map((message) => {
+      {messages.reverse().map((message) => {
         return message.user.id === userId ? (
           <div className="outgoing_msg" key={message.id}>
             <div className="sent_msg">
               <p>{message.message}</p>
               <span className="time_date">
-                {dayjs(message.message.createdAt).format(TIME_FORMAT)}
+                {dayjs(message.createdAt).format(TIME_FORMAT)}
               </span>{' '}
             </div>
           </div>
         ) : (
-            <div className="incoming_msg" key={message.id}>
-              <div className="incoming_msg_img">
-                <img src={message.user.avatar} alt={message.user.name} />
-              </div>
-              <div className="received_msg">
-                <div className="received_withd_msg">
-                  <p>{message.message}</p>
-                  <span className="time_date">
-                    {dayjs(message.message.createdAt).format(TIME_FORMAT)}
-                  </span>
-                </div>
+          <div className="incoming_msg" key={message.id}>
+            <div className="incoming_msg_img">
+              <img src={message.user.avatar} alt={message.user.name} />
+            </div>
+            <div className="received_msg">
+              <div className="received_withd_msg">
+                <p>{message.message}</p>
+                <span className="time_date">
+                  {dayjs(message.createdAt).format(TIME_FORMAT)}
+                </span>
               </div>
             </div>
-          );
+          </div>
+        );
       })}
-      <div style={{ float:"left", clear: "both" }}
-             ref={lastMsg}>
-        </div>
+      <div style={{ float: 'left', clear: 'both' }} ref={lastMsg}></div>
     </div>
   );
 }

@@ -16,10 +16,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import './styles/app.scss';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   notify = (message) =>
     toast.error(message, {
       position: toast.POSITION.TOP_RIGHT,
@@ -34,10 +30,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Helmet
-          titleTemplate="%s - Sample Blog"
-          defaultTitle="Sample React Blog"
-        >
+        <Helmet titleTemplate="%s - Simple Chat" defaultTitle="Simple Chat">
           <meta name="description" content="A React.js blog application" />
         </Helmet>
         <ToastContainer />

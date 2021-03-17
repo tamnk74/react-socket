@@ -56,6 +56,11 @@ module.exports = {
       },
     ],
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 4200,
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
@@ -64,15 +69,12 @@ module.exports = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
       DEBUG: false,
-      API_URL: 'http://localhost:3000',
-      SOCKET_URL: 'http://localhost:3000',
+      API_URL: 'http://localhost:3030',
+      SOCKET_URL: 'http://localhost:3030',
       GOOGLE_CLIENT_ID: '',
       FACEBOOK_APP_ID: '',
     }),
   ],
-  devServer: {
-    historyApiFallback: true,
-  },
   externals: {
     // global app config object
     config: JSON.stringify({
