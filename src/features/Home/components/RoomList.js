@@ -8,7 +8,7 @@ RoomList.propTypes = {
 
 export default function RoomList({ rooms, handleJoinRoom }) {
   return (
-    <div className="user-list">
+    <div className="room-list">
       {rooms.map((room) => (
         <button
           className="btn btn-link room"

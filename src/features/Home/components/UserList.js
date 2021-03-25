@@ -12,7 +12,7 @@ export default function UserList({ users, handleJoinUser }) {
       {users.map((user) => (
         <button
           key={user.id}
-          className="btn btn-link"
+          className="btn btn-link room"
           onClick={() => handleJoinUser(user)}
         >
           <div className="chat_list active_chat">

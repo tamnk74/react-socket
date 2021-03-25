@@ -102,49 +102,49 @@ function App({ authenticated, auth }) {
           </Link>
         </section>
       ) : (
-          <div className="row">
-            <div className="col-md-4 border">
-              <RoomList rooms={rooms} handleJoinRoom={joinRoom} />
-              <UserList users={users} handleJoinUser={joinUser} />
-            </div>
-            <div className="col-md-8">
-              <section id="chatroom" className="row">
-                <ul className="list-group">
-                  <MessageList
-                    messages={messages}
-                    userId={
-                      socketRef.current &&
-                      socketRef.current.user &&
-                      socketRef.current.user.id
-                    }
-                  />
-                </ul>
-                <section id="feedback"></section>
-              </section>
-              <section className="form-group">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <div className="type_msg">
-                    <div className="input_msg_write">
-                      <input
-                        name="message"
-                        className={classNames({
-                          write_msg: true,
-                          error: errors.message,
-                        })}
-                        type="text"
-                        placeholder="Type a message"
-                        ref={register({ required: true })}
-                      />
-                      <button className="msg_send_btn" type="submit">
-                        <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </section>
-            </div>
+        <div className="row">
+          <div className="col-md-4 border">
+            <RoomList rooms={rooms} handleJoinRoom={joinRoom} />
+            <UserList users={users} handleJoinUser={joinUser} />
           </div>
-        )}
+          <div className="col-md-8">
+            <section id="chatroom" className="row">
+              <ul className="list-group">
+                <MessageList
+                  messages={messages}
+                  userId={
+                    socketRef.current &&
+                    socketRef.current.user &&
+                    socketRef.current.user.id
+                  }
+                />
+              </ul>
+              <section id="feedback"></section>
+            </section>
+            <section className="form-group">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="type_msg">
+                  <div className="input_msg_write">
+                    <input
+                      name="message"
+                      className={classNames({
+                        write_msg: true,
+                        error: errors.message,
+                      })}
+                      type="text"
+                      placeholder="Type a message"
+                      ref={register({ required: true })}
+                    />
+                    <button className="msg_send_btn" type="submit">
+                      <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </section>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
