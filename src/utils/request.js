@@ -42,7 +42,7 @@ request.interceptors.response.use(
           refresh_token: window.localStorage.getItem('refresh_token'),
         })
         .then((data) => {
-          const { accessToken } = data;
+          const { access_token: accessToken } = data;
           const { config } = error;
           window.localStorage.setItem('token', accessToken);
           request.defaults.headers['x-access-token'] = `Bearer ${accessToken}`;
