@@ -204,7 +204,8 @@ img {
 .write_msg:focus.error {
   border-bottom: 1px solid red;
 }
-.user-list {
+.user-list,
+.room-list {
   margin-left: -15px;
   margin-right: -15px;
 }
@@ -223,4 +224,15 @@ img {
 .chat_ib {
   width: calc(100% - 40px);
   display: inline-block;
+}
+
+.btn.room {
+  width: 100%;
+  padding: 0px;
+}
+.room-list {
+  .room {
+    text-align: left;
+    padding: 5px 15px;
+  }
 }

@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 
 RoomList.propTypes = {
   rooms: PropTypes.array,
+  handleJoinRoom: PropTypes.func,
 };
 
-export default function RoomList({ rooms }) {
+export default function RoomList({ rooms, handleJoinRoom }) {
   return (
-    <div className="user-list">
+    <div className="room-list">
       {rooms.map((room) => (
-        <div className="chat_list active_chat" key={room.id}>
-          <div className="chat_people">
-            <div className="chat_img">
-              <h5>{room.name}</h5>
-            </div>
-          </div>
-        </div>
+        <button
+          className="btn btn-link room"
+          key={room.id}
+          onClick={() => handleJoinRoom(room)}
+        >
+          {room.name}
+        </button>
       ))}
     </div>
   );
