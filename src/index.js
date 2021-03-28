@@ -3,6 +3,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { App } from './App';
+import { register } from './serviceWorker';
 import configureStore from './store/configureStore';
 const store = configureStore();
 
@@ -16,3 +17,7 @@ render(
   </Provider>,
   document.getElementById('root'),
 );
+register({
+  ENV: 'development',
+  PUBLIC_URL: 'http://localhost:4200',
+});
