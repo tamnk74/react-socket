@@ -10,45 +10,22 @@ import { Navbar } from './features/App/components/Navbar';
 import Routers from './routers';
 import Loading from './components/Loading';
 import { getUserAction } from './store/auth/actions';
-import { ToastContainer, toast } from 'react-toastify';
-import { PermissionStatus } from './constants';
-import { messaging } from './utils/fcm';
+import ReactNotification, { store } from 'react-notifications-component'
 
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-notifications-component/dist/theme.css'
 import './styles/app.scss';
 
 class App extends Component {
-  notify = (message) =>
-    toast.error(message, {
-      position: toast.POSITION.TOP_RIGHT,
+  notify(message){
+    store.addNotification({
+      message,
     });
-
-  async configFirebase() {
-    const permission = await Notification.requestPermission();
-    if (permission === PermissionStatus.granted) {
-      console.log(`${permission} permission to notification`);
-      const token = await messaging.getToken({
-        vapidKey:
-          'BJ1Q-WxmYrRC6heIlVIlh2mvRNHEkXsDh_eNut5vr1WGgXp7u4524MAARAHybhIq_XP0bngqQjymLnGbwp8yP7k',
-      });
-      console.log(token);
-      // subscribeNotification({ deviceToken: token });
-      // navigator.serviceWorker.addEventListener('message', (message) => {
-      //   console.log(message);
-      //   alert(message);
-      // });
-      messaging.onMessage((payload) => {
-        console.log('Message received. ', payload);
-        // ...
-      });
-    }
   }
 
   componentDidMount() {
     if (localStorage.getItem('token')) {
       this.props.getUser();
     }
-    this.configFirebase();
   }
 
   render() {
@@ -57,7 +34,7 @@ class App extends Component {
         <Helmet titleTemplate="%s - Simple Chat" defaultTitle="Simple Chat">
           <meta name="description" content="A React.js blog application" />
         </Helmet>
-        <ToastContainer />
+        <ReactNotification />
         <Suspense fallback={<Loading />}>
           <Router history={history}>
             <Navbar />

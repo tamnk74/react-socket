@@ -1,5 +1,6 @@
 import request from 'utils/request';
 
+
 export const login = async ({ email, password }) => {
   const res = await request.post('/api/login', {
     email,
@@ -9,7 +10,7 @@ export const login = async ({ email, password }) => {
   localStorage.setItem('token', accessToken);
   localStorage.setItem('refresh_token', refreshToken);
   request.setToken(accessToken);
-
+  
   return request.get('/api/me');
 };
 
@@ -28,12 +29,12 @@ export const getUserInfo = () => {
   return request.get('/api/me');
 };
 
-export const logout = () => {
+export const logout = async () => {
   // remove user from local storage to log user out
   localStorage.removeItem('user');
   localStorage.removeItem('token');
 };
 
 export const register = (user) => {
-  return request.post(`/auth/register`, user);
+  return request.post('/auth/register', user);
 };
